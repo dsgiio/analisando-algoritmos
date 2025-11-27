@@ -1,9 +1,7 @@
-#include <stdio.h>
+#include <stdlib.h>
 #include "../include/utils.h"
 
-void copiarVetor(int* destino, int* origem, int tamanho) {
-    for (int i = 0; i < tamanho; i++)
-        destino[i] = origem[i];
+
+void copiar_vetor(int *dest, const int *orig, int n) {
+for (int i = 0; i < n; i++) dest[i] = orig[i];
 }
-
-

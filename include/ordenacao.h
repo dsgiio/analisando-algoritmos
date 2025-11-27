@@ -1,9 +1,10 @@
 #ifndef ORDENACAO_H
 #define ORDENACAO_H
 
-// Cada um deve adicionar aqui a função do seu código
-// EXEMPLO:
-//    void selectionSort(int* v, int n);
-//    void insertionSort(int* v, int n);
+
+void bubble_sort(int *v, int n);
+void quick_sort(int *v, int left, int right);
+void heap_sort(int *v, int n);
+
 
 #endif

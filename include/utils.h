@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-void copiarVetor(int* destino, int* origem, int tamanho);
+
+void copiar_vetor(int *dest, const int *orig, int n);
+
 
 #endif

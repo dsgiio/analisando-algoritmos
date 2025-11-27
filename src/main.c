@@ -2,41 +2,85 @@
 #include <stdlib.h>
 #include <time.h>
 
+
 #include "../include/arquivos.h"
-#include "../include/utils.h"
 #include "../include/ordenacao.h"
+#include "../include/utils.h"
+
 
 #define REPETICOES 1000
+#define PASSO 500
 
-int main() {
-    int tamanho;
-    int* dadosOriginais = lerDados("dados.txt", &tamanho);
 
-    if (!dadosOriginais) return 1;
+int main(void) {
+int tamanhoTotal;
+int *dadosOriginais = NULL;
 
-    int* vetor = malloc(tamanho * sizeof(int));
-    double tempos[REPETICOES];
 
-    for (int i = 0; i < REPETICOES; i++) {
+if (!ler_dados("dados.txt", &dadosOriginais, &tamanhoTotal)) {
+fprintf(stderr, "Erro ao ler dados.txt\n");
+return 1;
+}
 
-        copiarVetor(vetor, dadosOriginais, tamanho);
 
-        clock_t inicio = clock();
+FILE *csv = fopen("resultados_algoritmos.csv", "w");
+if (!csv) { perror("Erro ao abrir CSV"); free(dadosOriginais); return 1; }
 
-        // CHAME AQUI O ALGORITMO DE ORDENAÇÃO
 
-        // exemplo: selectionSort(vetor, tamanho);
+fprintf(csv, "Bloco,Bubble,Quick,Heap\n");
 
-        clock_t fim = clock();
 
-        tempos[i] = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
-    }
+for (int bloco = PASSO; bloco <= tamanhoTotal; bloco += PASSO) {
+double somaBubble = 0.0, somaQuick = 0.0, somaHeap = 0.0;
 
-    salvarCSV("resultados.csv", tempos, REPETICOES);
 
-    free(vetor);
-    free(dadosOriginais);
+for (int r = 0; r < REPETICOES; r++) {
+int *copia = malloc(bloco * sizeof(int));
+if (!copia) { fprintf(stderr, "malloc falhou\n"); break; }
 
-    printf("Execução finalizada. Resultados salvos em resultados.csv\n");
-    return 0;
+
+// Bubble
+copiar_vetor(copia, dadosOriginais, bloco);
+clock_t ini = clock();
+bubble_sort(copia, bloco);
+clock_t fim = clock();
+somaBubble += (double)(fim - ini) / CLOCKS_PER_SEC;
+
+
+// Quick
+copiar_vetor(copia, dadosOriginais, bloco);
+ini = clock();
+quick_sort(copia, 0, bloco - 1);
+fim = clock();
+somaQuick += (double)(fim - ini) / CLOCKS_PER_SEC;
+
+
+// Heap
+copiar_vetor(copia, dadosOriginais, bloco);
+ini = clock();
+heap_sort(copia, bloco);
+fim = clock();
+somaHeap += (double)(fim - ini) / CLOCKS_PER_SEC;
+
+
+free(copia);
+}
+
+
+double tempoBubble = somaBubble / REPETICOES;
+double tempoQuick = somaQuick / REPETICOES;
+double tempoHeap = somaHeap / REPETICOES;
+
+
+fprintf(csv, "%d,%.6f,%.6f,%.6f\n", bloco, tempoBubble, tempoQuick, tempoHeap);
+printf("Bloco %d finalizado: bubble=%.6f quick=%.6f heap=%.6f\n", bloco, tempoBubble, tempoQuick, tempoHeap);
+}
+
+
+fclose(csv);
+free(dadosOriginais);
+
+
+printf("Arquivo resultados_algoritmos.csv gerado!\n");
+return 0;
 }
