@@ -34,12 +34,13 @@ gcc *.c -I ../include -o programa.exe
 1 - Adicione o nome da sua função no `ordenacao.h`:
 ```c
 void quickSort(int* v, int left, int right);
-
+````
 2 - Implemente a função no ordenacao.c
 
 3 - No main.c, chame sua função:
+```c
 quickSort(vetor, 0, tamanho - 1);
-
+````
 
 # Arquivo de entrada
 O arquivo dados.txt contém os números usados em todos os testes.
